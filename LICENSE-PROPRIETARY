@@ -1,0 +1,37 @@
+ANVIL PROPRIETARY LICENSE
+
+Copyright (c) 2025 Saefurrohman. All Rights Reserved.
+
+This license applies to all original additions, modifications, and enhancements
+made by Saefurrohman to the Anvil project ("Proprietary Code"). The Proprietary
+Code is separate from and does not supersede the MIT License governing the
+upstream opencode codebase.
+
+1. GRANT OF RIGHTS
+   No rights are granted to any party to use, copy, modify, merge, publish,
+   distribute, sublicense, or sell the Proprietary Code without explicit written
+   permission from the copyright holder.
+
+2. RESTRICTIONS
+   You may not:
+   - Copy, reproduce, or distribute the Proprietary Code in whole or in part
+   - Modify, adapt, translate, or create derivative works based on the Proprietary Code
+   - Reverse engineer, decompile, or disassemble the Proprietary Code
+   - Remove or alter any proprietary notices or labels on the Proprietary Code
+   - Use the Proprietary Code for any commercial purpose without written authorization
+
+3. OWNERSHIP
+   The Proprietary Code remains the exclusive property of Saefurrohman.
+   This license does not transfer any ownership rights.
+
+4. NO WARRANTY
+   THE PROPRIETARY CODE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND.
+   THE COPYRIGHT HOLDER SHALL NOT BE LIABLE FOR ANY DAMAGES ARISING FROM
+   THE USE OF THIS SOFTWARE.
+
+5. UPSTREAM CODE
+   Portions of this software are derived from opencode, which is licensed under
+   the MIT License. The MIT License continues to apply to those portions.
+   See LICENSE for details.
+
+For licensing inquiries, contact: dedesfr95@gmail.com

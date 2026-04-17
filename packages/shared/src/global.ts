@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Saefurrohman. All Rights Reserved.
+// Licensed under the Anvil Proprietary License. See LICENSE-PROPRIETARY for details.
+
 import path from "path"
 import { xdgData, xdgCache, xdgConfig, xdgState } from "xdg-basedir"
 import os from "os"
@@ -19,8 +22,8 @@ export namespace Global {
   export const layer = Layer.effect(
     Service,
     Effect.gen(function* () {
-      const app = "opencode"
-      const home = process.env.OPENCODE_TEST_HOME ?? os.homedir()
+      const app = "anvil"
+      const home = process.env.ANVIL_TEST_HOME ?? os.homedir()
       const data = path.join(xdgData!, app)
       const cache = path.join(xdgCache!, app)
       const cfg = path.join(xdgConfig!, app)

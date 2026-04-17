@@ -1,6 +1,15 @@
+// Copyright (c) 2025 Saefurrohman. All Rights Reserved.
+// Licensed under the Anvil Proprietary License. See LICENSE-PROPRIETARY for details.
+
 export const logo = {
-  left: ["                   ", "█▀▀█ █▀▀█ █▀▀█ █▀▀▄", "█__█ █__█ █^^^ █__█", "▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀~~▀"],
-  right: ["             ▄     ", "█▀▀▀ █▀▀█ █▀▀█ █▀▀█", "█___ █__█ █__█ █^^^", "▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀"],
+  left: [
+    "  █████  ███    ██ ██    ██ ██ ██      ",
+    " ██   ██ ████   ██ ██    ██ ██ ██      ",
+    " ███████ ██ ██  ██ ██    ██ ██ ██      ",
+    " ██   ██ ██  ██ ██  ██  ██  ██ ██      ",
+    " ██   ██ ██   ████   ████   ██ ███████ ",
+  ],
+  right: ["", "", "", "", ""],
 }
 
 export const go = {

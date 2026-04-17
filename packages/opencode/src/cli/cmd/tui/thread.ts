@@ -1,4 +1,5 @@
 import { cmd } from "@/cli/cmd/cmd"
+import { requireAnvilAuth } from "@/anvil/auth-guard"
 import { tui } from "./app"
 import { Rpc } from "@/util"
 import { type rpc } from "./worker"
@@ -101,6 +102,8 @@ export const TuiThreadCommand = cmd({
         describe: "agent to use",
       }),
   handler: async (args) => {
+    await requireAnvilAuth()
+
     // Keep ENABLE_PROCESSED_INPUT cleared even if other code flips it.
     // (Important when running under `bun run` wrappers on Windows.)
     const unguard = win32InstallCtrlCGuard()

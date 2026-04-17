@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Saefurrohman. All Rights Reserved.
+// Licensed under the Anvil Proprietary License. See LICENSE-PROPRIETARY for details.
+
 import yargs from "yargs"
 import { hideBin } from "yargs/helpers"
 import { RunCommand } from "./cli/cmd/run"
@@ -36,6 +39,8 @@ import { JsonMigration } from "./storage"
 import { Database } from "./storage"
 import { errorMessage } from "./util/error"
 import { PluginCommand } from "./cli/cmd/plug"
+import { AnvilAuthCommand } from "./cli/cmd/anvil-auth"
+import { LoginCommand, LogoutCommand } from "./cli/cmd/login"
 import { Heap } from "./cli/heap"
 import { drizzle } from "drizzle-orm/bun-sqlite"
 
@@ -55,7 +60,7 @@ const args = hideBin(process.argv)
 
 function show(out: string) {
   const text = out.trimStart()
-  if (!text.startsWith("opencode ")) {
+  if (!text.startsWith("anvil ")) {
     process.stderr.write(UI.logo() + EOL + EOL)
     process.stderr.write(text)
     return
@@ -65,7 +70,7 @@ function show(out: string) {
 
 const cli = yargs(args)
   .parserConfiguration({ "populate--": true })
-  .scriptName("opencode")
+  .scriptName("anvil")
   .wrap(100)
   .help("help", "show help")
   .alias("help", "h")
@@ -172,6 +177,9 @@ const cli = yargs(args)
   .command(SessionCommand)
   .command(PluginCommand)
   .command(DbCommand)
+  .command(AnvilAuthCommand)
+  .command(LoginCommand)
+  .command(LogoutCommand)
   .fail((msg, err) => {
     if (
       msg?.startsWith("Unknown argument") ||
