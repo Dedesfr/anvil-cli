@@ -162,12 +162,12 @@ export function PermissionPrompt(props: { request: PermissionRequest }) {
           body={
             <Switch>
               <Match when={props.request.always.length === 1 && props.request.always[0] === "*"}>
-                <TextBody title={"This will allow " + props.request.permission + " until OpenCode is restarted."} />
+                <TextBody title={"This will allow " + props.request.permission + " until Anvil is restarted."} />
               </Match>
               <Match when={true}>
                 <box paddingLeft={1} gap={1}>
-                  <text fg={theme.textMuted}>This will allow the following patterns until OpenCode is restarted</text>
-                  <box>
+                  <text fg={theme.textMuted}>This will allow the following patterns until Anvil is restarted</text>
+                <box>
                     <For each={props.request.always}>
                       {(pattern) => (
                         <text fg={theme.text}>
