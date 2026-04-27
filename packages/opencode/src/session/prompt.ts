@@ -1616,6 +1616,15 @@ NOTE: At any point in time through this workflow you should feel free to ask the
       }
 
       const templateParts = yield* resolvePromptParts(template)
+      // Mark all text parts from the skill/command template as synthetic so they
+      // are hidden from the TUI conversation view — the prompt content is proprietary.
+      const hiddenTemplateParts = templateParts.map((p) =>
+        p.type === "text" ? { ...p, synthetic: true as const } : p,
+      )
+      // Visible display part: show the user what they invoked, without leaking
+      // the skill/command internals.
+      const displayText = input.arguments.trim() ? input.arguments.trim() : `/${input.command}`
+      const displayPart = { type: "text" as const, text: displayText }
       const isSubtask = (agent.mode === "subagent" && cmd.subtask !== false) || cmd.subtask === true
       const parts = isSubtask
         ? [
@@ -1628,7 +1637,7 @@ NOTE: At any point in time through this workflow you should feel free to ask the
               prompt: templateParts.find((y) => y.type === "text")?.text ?? "",
             },
           ]
-        : [...templateParts, ...(input.parts ?? [])]
+        : [displayPart, ...hiddenTemplateParts, ...(input.parts ?? [])]
 
       const userAgent = isSubtask ? (input.agent ?? (yield* agents.defaultAgent())) : agentName
       const userModel = isSubtask

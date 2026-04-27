@@ -11,7 +11,11 @@ const src = join(pkgDir, "src", "index.ts")
 const result = spawnSync(
   "bun",
   ["run", "--cwd", pkgDir, "--conditions=browser", src, ...process.argv.slice(2)],
-  { stdio: "inherit", cwd: pkgDir },
+  {
+    stdio: "inherit",
+    cwd: pkgDir,
+    env: { ...process.env, ANVIL_USER_CWD: process.cwd() },
+  },
 )
 
 process.exit(typeof result.status === "number" ? result.status : 0)

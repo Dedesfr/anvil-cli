@@ -28,6 +28,7 @@ import type { AssistantMessage, FilePart, UserMessage } from "@opencode-ai/sdk/v
 import { TuiEvent } from "../../event"
 import { iife } from "@/util/iife"
 import { Locale } from "@/util"
+import { TEMPLATE_COMMANDS, getTemplateContent, isTemplateCommand } from "@/anvil/tui-templates"
 import { formatDuration } from "@/util/format"
 import { createColors, createFrames } from "../../ui/spinner.ts"
 import { useDialog } from "@tui/ui/dialog"
@@ -127,6 +128,21 @@ export function Prompt(props: PromptProps) {
   const pasteStyleId = syntax().getStyleId("extmark.paste")!
   let promptPartTypeId = 0
   const event = useEvent()
+
+  function showSkillDialog() {
+    dialog.replace(() => (
+      <DialogSkill
+        onSelect={(skill) => {
+          input.setText(`/${skill} `)
+          setStore("prompt", {
+            input: `/${skill} `,
+            parts: [],
+          })
+          input.gotoBufferEnd()
+        }}
+      />
+    ))
+  }
 
   event.on(TuiEvent.PromptAppend.type, (evt) => {
     if (!input || input.isDestroyed) return
@@ -391,18 +407,7 @@ export function Prompt(props: PromptProps) {
           name: "skills",
         },
         onSelect: () => {
-          dialog.replace(() => (
-            <DialogSkill
-              onSelect={(skill) => {
-                input.setText(`/${skill} `)
-                setStore("prompt", {
-                  input: `/${skill} `,
-                  parts: [],
-                })
-                input.gotoBufferEnd()
-              }}
-            />
-          ))
+          showSkillDialog()
         },
       },
     ]
@@ -614,6 +619,31 @@ export function Prompt(props: PromptProps) {
     },
   ])
 
+  command.register(() =>
+    TEMPLATE_COMMANDS.map((t) => ({
+      title: t.title,
+      value: `template.${t.name}`,
+      category: "Templates",
+      description: t.description,
+      enabled: !props.disabled,
+      slash: { name: t.name },
+      onSelect: (dialog) => {
+        insertTemplateCommand(t.name)
+        dialog.clear()
+      },
+    })),
+  )
+
+  function insertTemplateCommand(command: string) {
+    if (props.disabled) return
+    const text = `/${command} `
+    const cursor = input.logicalCursor
+    input.deleteRange(0, 0, cursor.row, cursor.col)
+    input.insertText(text)
+    input.cursorOffset = Bun.stringWidth(text)
+    setStore("prompt", "input", input.plainText)
+  }
+
   async function submit() {
     // IME: double-defer may fire before onContentChange flushes the last
     // composed character (e.g. Korean hangul) to the store, so read
@@ -630,6 +660,14 @@ export function Prompt(props: PromptProps) {
     const trimmed = store.prompt.input.trim()
     if (trimmed === "exit" || trimmed === "quit" || trimmed === ":q") {
       void exit()
+      return
+    }
+    if (trimmed === "/skills") {
+      showSkillDialog()
+      input.extmarks.clear()
+      input.clear()
+      setStore("prompt", { input: "", parts: [] })
+      setStore("extmarkToPartIndex", new Map())
       return
     }
     const selectedModel = local.model.current()
@@ -693,6 +731,42 @@ export function Prompt(props: PromptProps) {
         command: inputText,
       })
       setStore("mode", "normal")
+    } else if (
+      inputText.startsWith("/") &&
+      iife(() => {
+        const command = inputText.split("\n")[0].split(" ")[0].slice(1)
+        return isTemplateCommand(command)
+      })
+    ) {
+      const command = inputText.split("\n")[0].split(" ")[0].slice(1)
+      const content = getTemplateContent(command)!
+      const instruction = inputText.slice(command.length + 1).trim()
+      sdk.client.session
+        .prompt({
+          sessionID,
+          ...selectedModel,
+          messageID,
+          agent: agent.name,
+          model: selectedModel,
+          variant,
+          parts: [
+            // Hidden from UI: full template sent to the AI
+            {
+              id: PartID.ascending(),
+              type: "text",
+              text: instruction ? `${content}\n\n# User Request\n${instruction}` : content,
+              synthetic: true,
+            },
+            // Visible in UI: only what the user actually typed
+            {
+              id: PartID.ascending(),
+              type: "text",
+              text: instruction || `/${command}`,
+            },
+            ...nonTextParts.map(assign),
+          ],
+        })
+        .catch(() => {})
     } else if (
       inputText.startsWith("/") &&
       iife(() => {

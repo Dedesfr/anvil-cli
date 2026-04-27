@@ -41,8 +41,20 @@ import { errorMessage } from "./util/error"
 import { PluginCommand } from "./cli/cmd/plug"
 import { AnvilAuthCommand } from "./cli/cmd/anvil-auth"
 import { LoginCommand, LogoutCommand } from "./cli/cmd/login"
+import {
+  WorkspaceInitCommand,
+  WorkspaceListCommand,
+  WorkspaceShowCommand,
+  WorkspaceValidateCommand,
+  WorkspaceArchiveCommand,
+  WorkspaceUpdateCommand,
+  WorkspaceGuideCommand,
+} from "./cli/cmd/workspace"
 import { Heap } from "./cli/heap"
 import { drizzle } from "drizzle-orm/bun-sqlite"
+
+// Restore user's cwd — bun run --cwd pkgDir overrides process.cwd()
+if (process.env.ANVIL_USER_CWD) process.chdir(process.env.ANVIL_USER_CWD)
 
 process.on("unhandledRejection", (e) => {
   Log.Default.error("rejection", {
@@ -180,6 +192,13 @@ const cli = yargs(args)
   .command(AnvilAuthCommand)
   .command(LoginCommand)
   .command(LogoutCommand)
+  .command(WorkspaceInitCommand)
+  .command(WorkspaceListCommand)
+  .command(WorkspaceShowCommand)
+  .command(WorkspaceValidateCommand)
+  .command(WorkspaceArchiveCommand)
+  .command(WorkspaceUpdateCommand)
+  .command(WorkspaceGuideCommand)
   .fail((msg, err) => {
     if (
       msg?.startsWith("Unknown argument") ||

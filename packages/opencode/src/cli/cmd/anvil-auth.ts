@@ -86,7 +86,8 @@ const ClearCommand = cmd({
 })
 
 export const AnvilAuthCommand = cmd({
-  command: "auth",
+  command: "account",
+  aliases: ["anvil-auth"],
   describe: "manage Anvil authentication",
   builder: (yargs) =>
     yargs

@@ -1,0 +1,5 @@
+export { TemplateManager } from './slash-command-templates.js';
+export type { SlashCommandId } from './slash-command-templates.js';
+export { projectTemplate } from './project-template.js';
+export { agentsTemplate } from './agents-template.js';
+export { claudeTemplate } from './claude-template.js';

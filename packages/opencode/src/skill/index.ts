@@ -16,6 +16,7 @@ import { ConfigMarkdown } from "../config"
 import { Glob } from "@opencode-ai/shared/util/glob"
 import { Log } from "../util"
 import { Discovery } from "./discovery"
+import { ANVIL_SKILLS } from "@/anvil/skills"
 
 const log = Log.create({ service: "skill" })
 const EXTERNAL_DIRS = [".claude", ".agents"]
@@ -205,6 +206,21 @@ const loadSkills = Effect.fnUntraced(function* (state: State, discovered: Discov
   log.info("init", { count: Object.keys(state.skills).length })
 })
 
+function loadAnvilSkills(state: State) {
+  for (const skill of ANVIL_SKILLS) {
+    if (state.skills[skill.name]) {
+      log.warn("duplicate skill name", {
+        name: skill.name,
+        existing: state.skills[skill.name].location,
+        duplicate: skill.location,
+      })
+    }
+
+    state.dirs.add("anvil://skills")
+    state.skills[skill.name] = skill
+  }
+}
+
 export class Service extends Context.Service<Service, Interface>()("@opencode/Skill") {}
 
 export const layer = Layer.effect(
@@ -223,6 +239,7 @@ export const layer = Layer.effect(
       Effect.fn("Skill.state")(function* (ctx) {
         const s: State = { skills: {}, dirs: new Set() }
         yield* loadSkills(s, yield* InstanceState.get(discovered), bus)
+        loadAnvilSkills(s)
         return s
       }),
     )
