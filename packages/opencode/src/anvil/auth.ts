@@ -3,7 +3,7 @@
 
 import fs from "fs/promises"
 import path from "path"
-import { Global } from "../global"
+import { Global } from "@opencode-ai/core/global"
 
 const AUTH_FILE = path.join(Global.Path.config, "anvil-auth.json")
 

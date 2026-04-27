@@ -3,7 +3,7 @@
 
 import z from "zod"
 import { EOL } from "os"
-import { NamedError } from "@opencode-ai/shared/util/error"
+import { NamedError } from "@opencode-ai/core/util/error"
 
 const word = `
   █████  ███    ██ ██    ██ ██ ██      
