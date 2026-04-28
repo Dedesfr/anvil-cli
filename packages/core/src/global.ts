@@ -47,12 +47,16 @@ async function migrateDirectory(from: string, to: string) {
   await fs.rename(from, to)
 }
 
-await Promise.all([
-  migrateDirectory(legacy.data, data),
-  migrateDirectory(legacy.cache, cache),
-  migrateDirectory(legacy.config, config),
-  migrateDirectory(legacy.state, state),
-])
+const isUninstall = process.argv.includes("uninstall")
+
+if (!isUninstall) {
+  await Promise.all([
+    migrateDirectory(legacy.data, data),
+    migrateDirectory(legacy.cache, cache),
+    migrateDirectory(legacy.config, config),
+    migrateDirectory(legacy.state, state),
+  ])
+}
 
 await Promise.all([
   fs.mkdir(Path.data, { recursive: true }),
