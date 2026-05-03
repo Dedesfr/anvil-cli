@@ -6,17 +6,10 @@ import { Context, Effect, Layer } from "effect"
 import { Flock } from "./util/flock"
 
 const app = "anvil"
-const legacyApp = "opencode"
 const data = path.join(xdgData!, app)
 const cache = path.join(xdgCache!, app)
 const config = path.join(xdgConfig!, app)
 const state = path.join(xdgState!, app)
-const legacy = {
-  data: path.join(xdgData!, legacyApp),
-  cache: path.join(xdgCache!, legacyApp),
-  config: path.join(xdgConfig!, legacyApp),
-  state: path.join(xdgState!, legacyApp),
-}
 
 const paths = {
   get home() {
@@ -33,30 +26,6 @@ const paths = {
 export const Path = paths
 
 Flock.setGlobal({ state })
-
-async function exists(target: string) {
-  return fs.access(target).then(
-    () => true,
-    () => false,
-  )
-}
-
-async function migrateDirectory(from: string, to: string) {
-  if (!(await exists(from)) || (await exists(to))) return
-  await fs.mkdir(path.dirname(to), { recursive: true })
-  await fs.rename(from, to)
-}
-
-const isUninstall = process.argv.includes("uninstall")
-
-if (!isUninstall) {
-  await Promise.all([
-    migrateDirectory(legacy.data, data),
-    migrateDirectory(legacy.cache, cache),
-    migrateDirectory(legacy.config, config),
-    migrateDirectory(legacy.state, state),
-  ])
-}
 
 await Promise.all([
   fs.mkdir(Path.data, { recursive: true }),
