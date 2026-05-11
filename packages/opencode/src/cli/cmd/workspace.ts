@@ -17,11 +17,6 @@ export const WorkspaceInitCommand = cmd({
   describe: "initialize Anvil workspace in your project",
   builder: (yargs: Argv) =>
     yargs
-      .option("tools", {
-        type: "array",
-        string: true,
-        describe: "AI tools to configure (claude, opencode, antigravity, codex, github-copilot, kilocode, forge, droid)",
-      })
       .option("no-interactive", {
         type: "boolean",
         describe: "run without interactive prompts",
@@ -31,7 +26,6 @@ export const WorkspaceInitCommand = cmd({
     await requireAnvilAuth()
     const cmd = new InitCommand()
     await cmd.execute({
-      tools: args.tools as string[] | undefined,
       noInteractive: args["no-interactive"] as boolean,
     })
   },

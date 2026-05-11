@@ -138,15 +138,14 @@ export class UpdateCommand {
                     const content = PROMPT_TEMPLATES[prompt.value];
                     
                     if (!content) {
-                        console.log(chalk.yellow(`  Warning: Template not found for ${prompt.name}`));
+                        console.log(chalk.yellow('⚠️ ') + ` No template found for ${prompt.value}`);
                         continue;
                     }
-                    
-                    // Update the prompt file
+
                     await fs.writeFile(promptFilePath, content, 'utf-8');
                     updatedPrompts.push(prompt.sourceFile);
                 } catch (error) {
-                    console.log(chalk.red(`  Error updating ${prompt.name}: ${error}`));
+                    console.log(chalk.red('✗') + ` Failed to update core prompt ${prompt.sourceFile}: ${error}`);
                 }
             }
         }
